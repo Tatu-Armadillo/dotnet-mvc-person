@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using MVC.Data.Context;
 using MVC.Models;
+using MVC.Services;
 
 namespace MVC.Repository.Implementations
 {
-    public class PersonRepositoryImplemetation : IPersonRepository
+    public class PersonRepositoryImplemetation : AuditLogRepository, IPersonRepository
     {
         private MySQLContext context;
 
-        public PersonRepositoryImplemetation(MySQLContext context) 
+        public PersonRepositoryImplemetation(MySQLContext context) : base(context)
         {
             this.context = context;
         }
@@ -31,6 +32,7 @@ namespace MVC.Repository.Implementations
             {
                 this.context.Add(person);
                 this.context.SaveChanges();
+                base.Save("Teste Create", "Create");
             } 
             catch(Exception) 
             {
@@ -52,6 +54,7 @@ namespace MVC.Repository.Implementations
                 {
                     this.context.Entry(result).CurrentValues.SetValues(person);
                     this.context.SaveChanges();
+                    base.Save("Teste Update", "Update");
                 } 
                 catch(Exception) 
                 {
@@ -70,6 +73,7 @@ namespace MVC.Repository.Implementations
                 {
                     this.context.Persons.Remove(result);
                     this.context.SaveChanges();
+                    base.Save("Teste Delete", "Delete");
                 } 
                 catch(Exception) 
                 {
